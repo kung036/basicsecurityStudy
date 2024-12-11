@@ -1,1 +1,7 @@
-spring.application.name=basicsecurityStudy
+spring:
+  application:
+    name: basicsecurityStudy
+  security:
+    user:
+      name: user
+      password: 1234
