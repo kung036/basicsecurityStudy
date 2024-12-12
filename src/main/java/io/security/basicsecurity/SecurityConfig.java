@@ -8,10 +8,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 @Configuration
@@ -23,14 +26,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .anyRequest()
                 .authenticated(); // 인증을 받지 않으면 url 접근이 안됨
+
         // 인증 정책 - 유저 검증(로그인)
         http.formLogin()
-                .loginPage("/loginPage")                        // 사용자 정의 로그인 페이지(항상 접근 가능해야함)
+//                .loginPage("/loginPage")                        // 사용자 정의 로그인 페이지(항상 접근 가능해야함)
                 .defaultSuccessUrl("/")                         // 로그인 성공 후 이동 페이지
                 .failureUrl("/login")       // 로그인 실패 후 이동 페이지
                 .usernameParameter("username")                  // 아이디 파라미터명 설정
                 .passwordParameter("password")                  // 패스워드 파라미터명 설정
-                .loginProcessingUrl("/login")                   // 로그인 Form Action Url
+                .loginProcessingUrl("/login_proc")                   // 로그인 Form Action Url
                 .successHandler(new AuthenticationSuccessHandler() { // 로그인 성공 후 핸들러
                     @Override
                     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
@@ -46,5 +50,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     }
                 })
                 .permitAll(); // formLogin()의 로그인 페이지 접근 허용
+
+        // 로그아웃
+        http.logout()                                   // 로그아웃 처리
+                .logoutUrl("/logout")                   // 로그아웃 처리 URL
+                .logoutSuccessUrl("/login")             // 로그아웃 성공 후 이동페이지
+                .deleteCookies("JSESSIONID", "remember-me")    // 로그아웃 후 쿠키 삭제(서버에서 자동으로 생성한 쿠키 삭제)
+                .addLogoutHandler(new LogoutHandler() { // 로그아웃 핸들러
+                    @Override
+                    public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
+                        HttpSession session = request.getSession(false);
+                        session.invalidate();
+                    }
+                })
+                .logoutSuccessHandler(new LogoutSuccessHandler() { // 로그아웃 성공 후 핸들러
+                    @Override
+                    public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+                        response.sendRedirect("/login");
+                    }
+                });
     }
 }
