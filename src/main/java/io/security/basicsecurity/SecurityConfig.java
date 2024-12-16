@@ -85,6 +85,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // 동시성 제어
         http.sessionManagement()
             .maximumSessions(1)             // 최대 허용 가능 세션 수 , -1 : 무제한 로그인 세션 허용
-            .maxSessionsPreventsLogin(true); // 동시 로그인 차단함(현재 사용자 인증 실패 전략),  false : 기존 세션 만료(default, 이전 사용자 세션 만료)
+            .maxSessionsPreventsLogin(false); // 동시 로그인 차단함(현재 사용자 인증 실패 전략),  false : 기존 세션 만료(default, 이전 사용자 세션 만료)
     }
 }
