@@ -89,6 +89,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         // 세션 고정 보호
         http.sessionManagement() // 세션 관리 기능이 동작함
-            .sessionFixation().none(); // 세션 고정 공격에 취약함
+            .sessionFixation().changeSessionId(); // default
     }
 }
