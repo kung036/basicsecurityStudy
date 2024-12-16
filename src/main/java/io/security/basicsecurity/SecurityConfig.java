@@ -83,8 +83,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .userDetailsService(userDetailsService); // 사용자 계정 조회하는 클래스 설정
 
         // 동시성 제어
-        http.sessionManagement()
+        http.sessionManagement() // 세션 관리 기능이 동작함
             .maximumSessions(1)             // 최대 허용 가능 세션 수 , -1 : 무제한 로그인 세션 허용
             .maxSessionsPreventsLogin(false); // 동시 로그인 차단함(현재 사용자 인증 실패 전략),  false : 기존 세션 만료(default, 이전 사용자 세션 만료)
+
+        // 세션 고정 보호
+        http.sessionManagement() // 세션 관리 기능이 동작함
+            .sessionFixation().none(); // 세션 고정 공격에 취약함
     }
 }
