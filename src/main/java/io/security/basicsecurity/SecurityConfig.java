@@ -81,5 +81,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .tokenValiditySeconds(3600)          // 쿠키 만료 시간 : Default는 14일(3600초)
 //            .alwaysRemember(true)                   // true : remember me 기능이 활성화되지 않아도 항상 실행(default : false)
             .userDetailsService(userDetailsService); // 사용자 계정 조회하는 클래스 설정
+
+        // 동시성 제어
+        http.sessionManagement()
+            .maximumSessions(1)             // 최대 허용 가능 세션 수 , -1 : 무제한 로그인 세션 허용
+            .maxSessionsPreventsLogin(true); // 동시 로그인 차단함(현재 사용자 인증 실패 전략),  false : 기존 세션 만료(default, 이전 사용자 세션 만료)
     }
 }
